@@ -62,7 +62,7 @@ const getEntradasProducto = async( req, res ) => {
 
 const getEntradaProducto = async( req, res ) =>{
 
-    try {
+    //try {
 
         const idEntradaProducto = req.params.idEntradaProducto
 
@@ -111,13 +111,13 @@ const getEntradaProducto = async( req, res ) =>{
             entradaProducto,
         })
         
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            msg: 'llamar al administrador error al obtener la entrada del producto',
-            error
-        })
-    }
+    // } catch (error) {
+    //     res.status(500).json({
+    //         ok: false,
+    //         msg: 'llamar al administrador error al obtener la entrada del producto',
+    //         error
+    //     })
+    // }
 
 }
 
