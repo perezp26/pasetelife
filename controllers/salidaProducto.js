@@ -63,7 +63,7 @@ const getSalidaProducto = async( req, res ) =>{
                                 'idProducto',
                                 'cantidad',
                                 'precioVenta',
-                                [sequelize.literal('cantidad * precioVenta'), 'totalPrecioVenta' ],
+                                [sequelize.literal('cantidad * detallesSalidaProductos.precioVenta'), 'totalPrecioVenta' ],
                                 'porAjuste',
                                 'idSucursal'
                     ],

@@ -89,14 +89,14 @@ const addNewTicketVenta = async( req, res ) => {
 
         await transaction.commit();
 
-        await db.query(`UPDATE ticketsVenta,(SELECT max(folio) as max FROM ticketsventa WHERE idSucursal = ${ ticketVenta.idSucursal } ) AS maxFolio
-                                SET folio = maxFolio.max + 1 
-                                WHERE idTicketVenta = ${ ticketVenta.idTicketVenta } `)
+        // await db.query(`UPDATE ticketsVenta,(SELECT max(folio) as max FROM ticketsventa WHERE idSucursal = ${ ticketVenta.idSucursal } ) AS maxFolio
+        //                         SET folio = maxFolio.max + 1 
+        //                         WHERE idTicketVenta = ${ ticketVenta.idTicketVenta } `)
 
-        const ticketVentaFolio = await TicketVenta.findOne({ where:{ idTicketVenta : ticketVenta.idTicketVenta } })
+        //const ticketVentaFolio = await TicketVenta.findOne({ where:{ idTicketVenta : ticketVenta.idTicketVenta } })
         res.status(200).json({
             ok: true,
-            ticketVentaFolio 
+            ticketVentaFolio : ticketVenta
         })
 
     } catch (error) {
