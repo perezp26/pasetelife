@@ -35,7 +35,10 @@ const Producto = db.define('productos',{
         type:DataTypes.CHAR,
         allowNull : false,
     },
-    precioVenta:{
+    precioVentaMulsay:{
+        type:DataTypes.DECIMAL,
+    },
+    precioVentaConkal:{
         type:DataTypes.DECIMAL,
     },
     activo: {

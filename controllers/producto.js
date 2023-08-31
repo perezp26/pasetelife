@@ -17,7 +17,8 @@ const getProductos = async( req, res ) =>{
                             'idTipoCubierta',
                             'numPersonas',
                             'inventariable',
-                            'precioVenta',
+                            'precioVentaMulsay',
+                            'precioVentaConkal',
                             ['idProducto','value'],
                             [sequelize.fn('concat',sequelize.col('productos.nombre'),' - ', sequelize.col('numPersonas'),' Pax'),'label']
                         ],

@@ -1,7 +1,7 @@
 const sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-const { Usuario, Permiso, Perfil } = require("../models/indexDb");
+const { Usuario, Permiso, Perfil, Modulo, PermisosUsuarios } = require("../models/indexDb");
 const generarJWT = require('../helpers/generaJWT');
 
 
@@ -176,9 +176,81 @@ const getUsuarios = async( req = request, res = response) =>{
     
 }
 
+const get_Perfiles_Modulos = async ( req = request, res = response ) => {
+
+    try {
+
+        Promise.all(
+            [ 
+                await Perfil.findAll(
+                    {
+                        attributes : [
+                            ['idPerfil', 'value'], ['descripcion', 'label' ] 
+                        ]
+                    }
+                ),
+                await Modulo.findAll({
+                    attributes : ['descripcion'],
+                    include : [
+                    {
+                      model : Permiso, 
+                      attributes : ['idpermiso','descripcion'],    
+                      required: true
+                    }
+                ]
+                })
+            ]
+        ). then( ( [ perfiles, modulos ] ) => {
+            res.status(200).json({
+                ok: true,
+                perfiles,
+                modulos
+            })
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false ,
+            msg: 'Hable con el administrador error al obtener perfiles y modulos'
+        }) 
+    }
+}
+
+const getPermisos_Usuario = async( req = request, res = response ) => {
+    try {
+        const idusuario = req.params.idusuario;
+        const permisos = await PermisosUsuarios.findAll( { where: { idUsuario: idusuario },
+            attributes : ['idPermiso'],} ); 
+
+        if ( !permisos ) {
+            return res.status(404).json({
+                ok :false,
+                msg: 'No se encontro los permisos del usuario'
+            }); 
+        } 
+
+        const user_permisos = permisos.map(( p ) =>{
+            return  p.idPermiso.toString();
+         })
+
+        res.status(200).json({
+            ok: true,
+            user_permisos
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false ,
+            msg: 'Hable con el administrador'
+        }) 
+    }
+}
+
 
 module.exports={
     loginUsuario,
     revalidarToken,
-    getUsuarios
+    getUsuarios,
+    get_Perfiles_Modulos,
+    getPermisos_Usuario
 }

@@ -65,7 +65,9 @@ Modulo.hasMany(Permiso,{ foreignKey: 'idModulo' });
 Permiso.belongsTo(Modulo,{ foreignKey: 'idModulo' });
 
 Pedido.hasMany(AbonoPedido,{ foreignKey: 'idPedido' });
-Pedido.belongsTo(Cliente, { foreignKey:'idCliente' } )
+Pedido.belongsTo(Cliente, { foreignKey:'idCliente' } );
+Pedido.belongsTo(Sucursal, { as:'sucursal', foreignKey:'idSucursal' });
+Pedido.belongsTo(Usuario,{ foreignKey:'idUsuario' }  );
 
 module.exports = {
     AbonoPedido,

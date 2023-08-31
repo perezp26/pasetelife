@@ -22,6 +22,9 @@ const AbonoPedido = db.define('abonosPedido',{
     descripcionAbono:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    idUsuario:{
+        type: DataTypes.INTEGER
     }
 },
 {

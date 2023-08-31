@@ -2,7 +2,7 @@ const sequelize = require('sequelize');
 const {Op} = require('sequelize');
 
 const db = require('../db/config');
-const { Pedido, AbonoPedido, Cliente } = require('../models/indexDb');
+const { Pedido, AbonoPedido, Cliente, Sucursal } = require('../models/indexDb');
 
 
 const addNewPedido =  async ( req, res ) =>{
@@ -20,7 +20,8 @@ const addNewPedido =  async ( req, res ) =>{
                 idPedido : pedido.idPedido,
                 fechaAbono : pedido.fechaPedido,
                 montoAbono : montoAnticipo,
-                descripcionAbono: 'Anticipo Incial'
+                descripcionAbono: 'Anticipo Incial',
+                idUsuario : pedido.idUsuario
             },{ transaction })
         }
 
@@ -44,11 +45,11 @@ const updatePedido = async( req, res ) => {
     try {
 
         const idPedido = req.params.idPedido;
-        const { fechaPedidio, fechaEntrega, lugarDeEntrega, idCliente, descripcionProducto, numPersonas, precio } = req.body
+        const { fechaPedidio, fechaEntrega, idSucursal, idCliente, descripcionProducto, numPersonas, precio } = req.body
         const data = {
             fechaPedidio,
             fechaEntrega,
-            lugarDeEntrega, 
+            idSucursal, 
             idCliente,
             descripcionProducto,
             numPersonas,
@@ -73,7 +74,7 @@ const updatePedido = async( req, res ) => {
 }
 
 const getPedidos = async( req, res ) =>{
-    //try {
+    try {
 
         const dateStart = req.params.dateStart;
         const dateEnd = req.params.dateEnd
@@ -102,10 +103,18 @@ const getPedidos = async( req, res ) =>{
                                     attributes:[
                                         'nombre'
                                     ]
+                                },
+                                {
+                                    model: Sucursal,
+                                    as: 'sucursal',
+                                    attributes:[
+                                        'nombre',
+                                        'telefono'
+                                    ]
                                 }
                             ],
                             group:['idPedido', 'fechaPedido', 'fechaEntrega', 'descripcionProducto', 'precio', 'anticipo', 'status',
-                                    'cliente.nombre'
+                                    'cliente.nombre', 'sucursal.nombre','sucursal.telefono'
                             ],
                             raw: true
         });
@@ -116,12 +125,12 @@ const getPedidos = async( req, res ) =>{
         })
         
         
-    // } catch (error) {
-    //     res.status(500).json({
-    //         ok: false,
-    //         msg: 'llamar al administrador error al obtener los pedidos',
-    //     })
-    // }
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'llamar al administrador error al obtener los pedidos',
+        })
+    }
 }
 
 const getPedido = async( req, res ) => {
@@ -137,6 +146,14 @@ const getPedido = async( req, res ) => {
                     attributes : [  ['idCliente','value'],
                                     ['nombre','label']
                                  ]
+                },
+                {
+                    model: Sucursal,
+                    as: 'sucursal',
+                    attributes:[
+                                    ['idSucursal','value'],
+                                    ['nombre','label']
+                    ]
                 }
             ]
         })

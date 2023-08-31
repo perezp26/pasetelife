@@ -39,12 +39,6 @@ const Perfil = db.define('perfiles',{
         type: DataTypes.STRING,
         allowNull : false
     },
-    direccion : {
-        type: DataTypes.STRING
-    },
-    departamento:{
-        type: DataTypes.STRING
-    },
     activo:{
         type: DataTypes.STRING,
     }

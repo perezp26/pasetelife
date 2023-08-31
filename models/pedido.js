@@ -15,8 +15,8 @@ const Pedido = db.define('pedidos',{
         type : DataTypes.DATEONLY,
         allowNull : false,
     },
-    lugarDeEntrega : {
-        type : DataTypes.STRING, 
+    idSucursal : {
+        type : DataTypes.INTEGER, 
     },
     idCliente:{
         type : DataTypes.INTEGER,
@@ -41,6 +41,9 @@ const Pedido = db.define('pedidos',{
         type : DataTypes.CHAR,
         allowNull: false
     },
+    idUsuario: {
+        type:DataTypes.INTEGER
+    }
 
 },{
     timestamps: false,
