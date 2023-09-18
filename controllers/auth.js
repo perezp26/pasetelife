@@ -1,8 +1,10 @@
 const sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
+const db = require('../db/config');
 
-const { Usuario, Permiso, Perfil, Modulo, PermisosUsuarios } = require("../models/indexDb");
+const { Usuario, Permiso, Perfil, Modulo, PermisosUsuarios, Sucursal } = require("../models/indexDb");
 const generarJWT = require('../helpers/generaJWT');
+const generarId = require('../helpers/generarId');
 
 
 const loginUsuario = async( req, res) => {
@@ -48,7 +50,7 @@ const loginUsuario = async( req, res) => {
                   }) 
               }
 
-              if ( user.idPerfil != 1 && user.idPerfil != sucursal.value ){
+              if ( user.idPerfil != 1 && ( user.idSucursal != sucursal.value || user.idSucursal !== 0 ) ){
                 return res.status(400).json({
                     ok : false,
                     msg: 'Credenciales invalidas!!'
@@ -145,11 +147,6 @@ const getUsuarios = async( req = request, res = response) =>{
     try {
         const usersResult = await Usuario.findAll({
             include : [
-                // {
-                //   model : Permiso, 
-                //   attributes : ['idpermiso'],
-                //   required: false
-                // },
                 {
                   model: Perfil,
                   as: 'Perfil',
@@ -157,6 +154,14 @@ const getUsuarios = async( req = request, res = response) =>{
                                  ['descripcion', 'label' ]
                                ],
                   required: true
+                },
+                {
+                    model: Sucursal,
+                    as: 'sucursal',
+                    attributes : [
+                                 ['idSucursal', 'value'], 
+                                 ['nombre', 'label' ]
+                    ]
                 }
             ]
         });
@@ -246,11 +251,173 @@ const getPermisos_Usuario = async( req = request, res = response ) => {
     }
 }
 
+const crearUsuario = async(req = request , res = response ) => {
+    
+    const { nombre,usuario, idPerfil,password,permisos, sucursal } = req.body;
+    let transaction ;
+    transaction =  await db.transaction();
+
+    try {
+
+        const existeUsuario = await Usuario.findOne({
+            where: {
+                usuario : usuario
+            }
+        })
+        
+        if (existeUsuario){
+            return res.status(400).json({
+                ok : false,
+                msg: 'Ya existe un usuario con ese nombre ' + usuario
+            })
+        }
+        const salt = bcrypt.genSaltSync();
+        const passwordEncrypt = bcrypt.hashSync( password, salt );
+
+        const user = await Usuario.create({
+                nombre,
+                usuario,
+                idPerfil,
+                password : passwordEncrypt,
+                idSucursal : sucursal !== 0 && sucursal.value
+            }, { transaction } );
+
+             for( p in permisos){
+                await PermisosUsuarios.create(
+                            {
+                                idpermiso_usuario : generarId(),
+                                idPermiso : permisos[p],
+                                idUsuario : user.idUsuario,
+                                
+                            }
+                        ,{ transaction })
+
+             }
+            
+
+        await transaction.commit();
+
+
+        const token = await generarJWT(user.idUsuario, user.usuario, user.nombre, user.idPerfil, sucursal)
+
+        res.status(201).json({
+            ok:true,
+                ok : true,
+                user,
+                token 
+        })
+        
+    } catch (error) {
+        if ( transaction ) await transaction.rollback();
+        
+        res.status(500).json({
+            ok: false ,
+            msg: 'Hable con el administrador'
+        }) 
+    }
+
+}
+
+const updateUsuario = async( req = request , res = response ) => {
+
+    const idusuario = req.params.idusuario
+    const { nombre, idPerfil, permisos, sucursal } = req.body;
+
+    let transaction ;
+    transaction =  await db.transaction()
+
+    try {
+        const usuarioUpdate = await Usuario.findOne({
+            where: {
+                idusuario : idusuario
+            }
+        })
+
+        const user = await usuarioUpdate.update({
+                nombre,
+                idPerfil,
+                idSucursal : sucursal !== 0 && sucursal.value
+            }, { transaction } );
+
+            
+            await PermisosUsuarios.destroy({
+                     where : {
+                        idUsuario : user.idUsuario
+                     }
+                 , transaction} 
+            )
+            
+            for( p in permisos){
+                await PermisosUsuarios.create(
+                            {
+                                idpermiso_usuario : generarId(),
+                                idPermiso : permisos[p],
+                                idUsuario : user.idUsuario,
+                                
+                            }
+                        ,{ transaction })
+
+             }
+            
+
+        await transaction.commit();
+
+        const token = await generarJWT(user.idUsuario, user.usuario, user.nombre, user.idPerfil, sucursal)
+
+        res.status(201).json({
+            ok:true,
+            user,
+            token 
+        })
+        
+    } catch (error) {
+        if ( transaction ) await transaction.rollback();
+        
+        res.status(500).json({
+            ok: false ,
+            msg: 'Hable con el administrador, error al actualizar usuario'
+        }) 
+    }
+}
+
+const updatePassword = async( req, res ) => {
+    const idUsuario = req.params.idusuario
+    const { password } = req.body;
+
+    try {
+        const usuarioUpdate = await Usuario.findByPk( idUsuario );
+
+        const salt = bcrypt.genSaltSync();
+        const passwordEncrypt = bcrypt.hashSync( password, salt );
+
+        const user = await usuarioUpdate.update({ password : passwordEncrypt });
+
+        res.status(201).json({
+            ok:true,
+            msg:'Datos Guardados Correctamente',
+            data: {
+                ok : true,
+                user }
+        })
+        
+    } catch (error) {
+        if ( transaction ) await transaction.rollback();
+        
+        res.status(500).json({
+            ok: false ,
+            msg: 'Hable con el administrador'
+        }) 
+    }
+}
+
 
 module.exports={
     loginUsuario,
     revalidarToken,
     getUsuarios,
     get_Perfiles_Modulos,
-    getPermisos_Usuario
+    getPermisos_Usuario,
+    updateUsuario,
+    crearUsuario,
+    updatePassword
 }

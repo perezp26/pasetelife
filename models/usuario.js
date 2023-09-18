@@ -24,6 +24,9 @@ const Usuario = db.define('usuarios',{
         type : DataTypes.STRING,
         allowNull : false,
     },
+    idSucursal : {
+        type: DataTypes.INTEGER
+    }
 
 },{
     timestamps: false

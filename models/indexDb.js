@@ -27,6 +27,7 @@ const UnidadMedida = require('./unidadMedida');
 Usuario.belongsToMany(Permiso, { through : 'permisos_usuarios', foreignKey : 'idusuario'});
 Permiso.belongsToMany(Usuario, { through:'permisos_usuarios', foreignKey : 'idpermiso' });
 Usuario.belongsTo( Perfil, { as:'Perfil', foreignKey : 'idPerfil' } );
+Usuario.belongsTo( Sucursal, { as:'sucursal', foreignKey: 'idSucursal' } )
 
 EntradaInsumo.belongsTo(Sucursal, {  as:'sucursal', foreignKey:'idSucursal' });
 EntradaInsumo.hasMany(DetalleEntradaInsumo,{ as:'detalleEntradaInsumo', foreignKey:'idEntradaInsumo'});
