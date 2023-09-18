@@ -16,7 +16,7 @@ const loginUsuario = async( req, res) => {
                 where: {
                     usuario : usuario
                 },
-                attributes : [  'idUsuario','nombre','usuario','password','idPerfil'],
+                attributes : [  'idUsuario','nombre','usuario','password','idPerfil', 'idSucursal'],
                 include : [
                     {
                       model : Permiso, 
@@ -49,13 +49,14 @@ const loginUsuario = async( req, res) => {
                       msg: 'Credenciales invalidas!!'
                   }) 
               }
-
-              if ( user.idPerfil != 1 && ( user.idSucursal != sucursal.value || user.idSucursal !== 0 ) ){
-                return res.status(400).json({
-                    ok : false,
-                    msg: 'Credenciales invalidas!!'
-                }) 
-              }
+            //   console.log( sucursal )
+            //   console.log( user.dataValues );
+                if ( user.idSucursal !== sucursal.value && user.idSucursal !== 0 ) {
+                    return res.status(400).json({
+                        ok : false,
+                        msg: 'Credenciales invalidas!!'
+                    }) 
+                }
             
             const token = await generarJWT(user.idUsuario, user.usuario, user.nombre, user.idPerfil, sucursal)
 
@@ -321,7 +322,7 @@ const crearUsuario = async(req = request , res = response ) => {
 const updateUsuario = async( req = request , res = response ) => {
 
     const idusuario = req.params.idusuario
-    const { nombre, idPerfil, permisos, sucursal } = req.body;
+    const { nombre, idPerfil, permisos, sucursal, idSucursal } = req.body;
 
     let transaction ;
     transaction =  await db.transaction()
@@ -336,7 +337,7 @@ const updateUsuario = async( req = request , res = response ) => {
         const user = await usuarioUpdate.update({
                 nombre,
                 idPerfil,
-                idSucursal : sucursal !== 0 && sucursal.value
+                idSucursal
             }, { transaction } );
 
             
@@ -362,12 +363,12 @@ const updateUsuario = async( req = request , res = response ) => {
 
         await transaction.commit();
 
-        const token = await generarJWT(user.idUsuario, user.usuario, user.nombre, user.idPerfil, sucursal)
+        //const token = await generarJWT(user.idUsuario, user.usuario, user.nombre, user.idPerfil, sucursal)
 
         res.status(201).json({
             ok:true,
             user,
-            token 
+            //token 
         })
         
     } catch (error) {
