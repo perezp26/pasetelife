@@ -67,15 +67,15 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'-----------------------------------------------------'
+                text:'--------------------------------------------'
             },
             {
                 style:{
-                    fontSize:8
+                    fontSize:7
                 },
                 margin: [0,5,0,0],
                 table: {
-                    widths: [ 20, 85, 30 ],
+                    widths: [ 20, 75, 30 ],
                     body: rowsDetalle,
                 },
                 layout: {
@@ -95,7 +95,7 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'--------------------------------------'
+                text:'-------------------------------------------'
             },
             {
                 margin:[5,4,3,0],
