@@ -25,7 +25,7 @@ const generarTicketVenta = (req, res) => {
         pageMargins : [ 1, 1, 1, 1 ],
         styles:{
             body:{
-                fontSize : 12
+                fontSize : 10
             }
         },
         content : [
@@ -47,7 +47,7 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'-----------------------------------------------------'
+                text:'-------------------------------------------'
             },
             {
                 margin:[5,0,0,0],
@@ -98,19 +98,19 @@ const generarTicketVenta = (req, res) => {
                 text:'-------------------------------------------'
             },
             {
-                margin:[5,4,3,0],
+                margin:[5,4,3,2],
                 text:`Total: ${ ticketVenta.total.toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,1,3,0],
+                margin:[5,1,3,2],
                 text:`Recibido: ${ ticketVenta.recibido.toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,2,3,0],
+                margin:[5,2,3,2],
                 text:`Cambio: ${ (ticketVenta.recibido - ticketVenta.total).toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,7,5,0],
+                margin:[5,7,5,2],
                 text:`LOS PASTELES SON NUESTRA PASIÓN`, fontSize:'8', alignment:'center'
             },
             {
