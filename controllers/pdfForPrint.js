@@ -19,7 +19,7 @@ const generarTicketVenta = (req, res) => {
     const docDefinition = {
 
         pageSize:{
-            width: 150,
+            width: 138,
             height: 'auto'
         },
         pageMargins : [ 1, 1, 1, 1 ],
@@ -47,7 +47,7 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'-------------------------------------------'
+                text:'----------------------------------------'
             },
             {
                 margin:[5,0,0,0],
@@ -67,7 +67,7 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'--------------------------------------------'
+                text:'----------------------------------------'
             },
             {
                 style:{
@@ -95,26 +95,26 @@ const generarTicketVenta = (req, res) => {
             },
             {
                 margin:[2,-5,0,0],
-                text:'-------------------------------------------'
+                text:'----------------------------------------'
             },
             {
-                margin:[5,4,3,2],
+                margin:[2,4,3,2],
                 text:`Total: ${ ticketVenta.total.toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,1,3,2],
+                margin:[2,1,3,2],
                 text:`Recibido: ${ ticketVenta.recibido.toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,2,3,2],
+                margin:[2,2,3,2],
                 text:`Cambio: ${ (ticketVenta.recibido - ticketVenta.total).toLocaleString?.('es-MX',{style:'currency',currency: 'MXN',}) }`, fontSize:8, alignment:'right'
             },
             {
-                margin:[5,7,5,2],
+                margin:[2,7,5,2],
                 text:`LOS PASTELES SON NUESTRA PASIÓN`, fontSize:'8', alignment:'center'
             },
             {
-                margin:[5,0,5,10],
+                margin:[2,0,5,10],
                 text:`¡¡Gracias por su preferencia!!`, fontSize:'8', alignment:'center'
             },
         ]
