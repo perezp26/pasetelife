@@ -19,7 +19,7 @@ const generarTicketVenta = (req, res) => {
     const docDefinition = {
 
         pageSize:{
-            width: 180,
+            width: 150,
             height: 'auto'
         },
         pageMargins : [ 1, 1, 1, 1 ],
@@ -73,10 +73,9 @@ const generarTicketVenta = (req, res) => {
                 style:{
                     fontSize:8
                 },
-                color: '#555',
                 margin: [0,5,0,0],
                 table: {
-                    widths: [ 20, 115, 30 ],
+                    widths: [ 20, 85, 30 ],
                     body: rowsDetalle,
                 },
                 layout: {
