@@ -7,7 +7,7 @@ const router = Router();
 router.use( validarJWT );
 
 router.get('/:idSucursal/:idCaja', getStatusCaja )
-router.get('/:idControlAperturaCierreCaja', getDataCierreCaja )
+router.get('/cierrecaja/:idControlAperturaCierreCaja/:idSucursal', getDataCierreCaja )
 
 router.post('/:idSucursal/:idCaja', setAperturaCaja );
 router.put('/:idSucursal/:idCaja/:idControlAperturaCierreCaja', setCierreCaja)

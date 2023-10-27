@@ -71,12 +71,15 @@ const setAperturaCaja = async(req, res) => {
 
 const getDataCierreCaja = async(req, res) => {
     const idControlAperturaCierreCaja = req.params.idControlAperturaCierreCaja
+    const idSucursal = parseInt(req.params.idSucursal);
 
     const controlAperturaCierre = await ControlApeturaCierreCaja.findOne({ where:{ idControlAperturaCierreCaja } })
 
     const totalImportes = await TicketVenta.findAll({ 
-                        where:{ fechaTicketVenta : {[Op.gte] : controlAperturaCierre.fechaHoraApertura}, 
-                                status : { [Op.ne] : 'C' }
+                        where:{ 
+                                fechaTicketVenta : {[Op.gte] : controlAperturaCierre.fechaHoraApertura}, 
+                                status : { [Op.ne] : 'C' },
+                                idSucursal 
                                },
                         attributes:[
                             'formaPago',
