@@ -43,6 +43,9 @@ const Pedido = db.define('pedidos',{
     },
     idUsuario: {
         type:DataTypes.INTEGER
+    },
+    nombreCliente:{
+        type:DataTypes.STRING
     }
 
 },{

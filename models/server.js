@@ -16,6 +16,7 @@ class Server {
             auth : '/api/auth/',
             caducidades:'/api/caducidades',
             catTipos:'/api/catalogostipos/',
+            cierreCaja : '/api/cierrecaja/',
             cliente:'/api/cliente/',
             controlCaja : '/api/controlcaja/',
             entradaInsumo: '/api/entradainsumo/',
@@ -59,6 +60,7 @@ class Server {
         this.app.use(this.paths.auth, require('../routes/auth'));
         this.app.use(this.paths.caducidades, require('../routes/caducidades'));
         this.app.use(this.paths.catTipos, require('../routes/catalogosTipos'));
+        this.app.use(this.paths.cierreCaja, require('../routes/cierreCaja'));
         this.app.use(this.paths.cliente, require('../routes/cliente'));
         this.app.use(this.paths.controlCaja, require('../routes/controlCaja'));
         this.app.use(this.paths.entradaInsumo, require('../routes/entradaInsumo'));
