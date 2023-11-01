@@ -3,7 +3,7 @@ const {Op} = require('sequelize');
 const { ControlApeturaCierreCaja } = require('../models/controlCaja');
 
 const getCierres = async( req, res ) =>{
-    // try {
+    try {
 
         const dateStart = req.params.dateStart + ' 00:00:00';
         const dateEnd = req.params.dateEnd + ' 23:59:59';
@@ -29,12 +29,12 @@ const getCierres = async( req, res ) =>{
         })
         
         
-    // } catch (error) {
-    //     res.status(500).json({
-    //         ok: false,
-    //         msg: 'llamar al administrador error al obtener los cierres',
-    //     })
-    // }
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'llamar al administrador error al obtener los cierres',
+        })
+    }
 }
 
 module.exports = {

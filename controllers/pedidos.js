@@ -9,7 +9,7 @@ const addNewPedido =  async ( req, res ) =>{
 
     let transaction = await db.transaction();
 
-    try {
+    //try {
         const { anticipo, montoAnticipo } = req.body
         const pedido = await Pedido.create({ 
             ...req.body
@@ -32,12 +32,12 @@ const addNewPedido =  async ( req, res ) =>{
             pedido:{ ...pedido.dataValues, ['abonosPedidos.totalAbonos'] : montoAnticipo },
         })
         
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            msg: 'llamar al administrador error al agregar el pedido',
-        })
-    }
+    // } catch (error) {
+    //     res.status(500).json({
+    //         ok: false,
+    //         msg: 'llamar al administrador error al agregar el pedido',
+    //     })
+    // }
 
 }
 
