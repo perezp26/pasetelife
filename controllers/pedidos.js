@@ -33,7 +33,7 @@ const addNewPedido =  async ( req, res ) =>{
         })
         
     } catch (error) {
-        res.status(500).json({
+        res.status(500).json({      
             ok: false,
             msg: 'llamar al administrador error al agregar el pedido',
         })
