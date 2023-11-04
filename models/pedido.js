@@ -8,7 +8,7 @@ const Pedido = db.define('pedidos',{
         autoIncrement : true
     },
     fechaPedido : {
-        type : DataTypes.DATEONLY,
+        type : DataTypes.TIME,
         allowNull : false,
     },
     fechaEntrega : {
@@ -20,6 +20,9 @@ const Pedido = db.define('pedidos',{
     },
     idCliente:{
         type : DataTypes.INTEGER,
+    },
+    nombreCliente:{
+        type:DataTypes.STRING
     },
     descripcionProducto : {
         type : DataTypes.STRING, 
@@ -37,15 +40,19 @@ const Pedido = db.define('pedidos',{
         type : DataTypes.CHAR,
         allowNull: false
     },
+    formaPago:{
+        type: DataTypes.CHAR
+    },
+    montoAnticipo:{
+        type: DataTypes.DECIMAL,
+        allowNull: false
+    },
     status: {
         type : DataTypes.CHAR,
         allowNull: false
     },
     idUsuario: {
         type:DataTypes.INTEGER
-    },
-    nombreCliente:{
-        type:DataTypes.STRING
     }
 
 },{

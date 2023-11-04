@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 
 const db = require('../db/config');
 
-const {AperturaCierreCaja, ControlApeturaCierreCaja, TicketVenta} = require("../models/indexDb");
+const {AperturaCierreCaja, ControlApeturaCierreCaja, TicketVenta, Pedido, AbonoPedido} = require("../models/indexDb");
 
 
 const getStatusCaja = async( req, res ) => {
@@ -90,9 +90,23 @@ const getDataCierreCaja = async(req, res) => {
                     
     });
 
+    const totalImportesAbonos = await AbonoPedido.findAll({
+        where:{ 
+            fechaAbono : {[Op.gte] : controlAperturaCierre.fechaHoraApertura}, 
+            idSucursal 
+           },
+        attributes:[
+            'formaPago',
+            [sequelize.fn('SUM', sequelize.col('montoAbono')), 'total']
+        ],
+        group:[ 'formaPago' ],
+        raw:true
+    })
+
     res.status(200).json({
         ok: true,
-        totalImportes
+        totalImportes,
+        totalImportesAbonos
     })
 }
 
@@ -116,6 +130,11 @@ const setCierreCaja = async(req, res) => {
                                     { where:{ fechaTicketVenta : {[Op.gte] : controlAperturaCierre.fechaHoraApertura}, 
                                                              status : { [Op.ne] : 'C' } }, transaction }
                                 )
+        await AbonoPedido.update(
+            { idControlAperturaCierreCaja :  controlAperturaCierre.idControlAperturaCierreCaja },
+            { where:{ fechaAbono : {[Op.gte] : controlAperturaCierre.fechaHoraApertura}, 
+                                        }, transaction }
+        )
 
         await transaction.commit();
 

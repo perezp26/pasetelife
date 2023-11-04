@@ -32,7 +32,18 @@ const getAbonos = async( req, res) => {
     try {
         const idPedido = req.params.idPedido
         const abonos = await AbonoPedido.findAll({
-                where : { idPedido } 
+                where : { idPedido },
+                attributes : [
+                    'idAbonoPedido',
+                    'idSucursal',
+                    'idPedido',
+                    [sequelize.literal('CAST(fechaAbono as CHAR(19))'),'fechaAbono'],
+                    'formaPago',
+                    'montoAbono',
+                    'descripcionAbono',
+                    'idUsuario',
+                    'idControlAperturaCierreCaja'
+                ] 
         })
         
         res.status(200).json({

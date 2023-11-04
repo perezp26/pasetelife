@@ -7,13 +7,19 @@ const AbonoPedido = db.define('abonosPedido',{
         primaryKey: true,
         autoIncrement : true
     },
+    idSucursal:{
+        type: DataTypes.INTEGER
+    },
     idPedido:{
         type: DataTypes.INTEGER,
         allowNull: false
     },
     fechaAbono : {
-        type : DataTypes.DATEONLY,
+        type : DataTypes.TIME,
         allowNull : false,
+    },
+    formaPago:{
+        type : DataTypes.CHAR,
     },
     montoAbono:{
         type : DataTypes.DECIMAL,
@@ -24,6 +30,9 @@ const AbonoPedido = db.define('abonosPedido',{
         allowNull: false
     },
     idUsuario:{
+        type: DataTypes.INTEGER
+    },
+    idControlAperturaCierreCaja:{
         type: DataTypes.INTEGER
     }
 },

@@ -18,9 +18,11 @@ const addNewPedido =  async ( req, res ) =>{
         if ( anticipo === '1' ){
             await AbonoPedido.create({
                 idPedido : pedido.idPedido,
+                idSucursal : pedido.idSucursal,
                 fechaAbono : pedido.fechaPedido,
+                formaPago : pedido.formaPago,
                 montoAbono : montoAnticipo,
-                descripcionAbono: 'Anticipo Incial',
+                descripcionAbono: pedido.precio <= montoAnticipo ? 'Líquido' : 'Anticipo Incial',
                 idUsuario : pedido.idUsuario
             },{ transaction })
         }
@@ -76,14 +78,14 @@ const updatePedido = async( req, res ) => {
 const getPedidos = async( req, res ) =>{
     try {
 
-        const dateStart = req.params.dateStart;
-        const dateEnd = req.params.dateEnd
+        const dateStart = req.params.dateStart + ' 00:00:00';
+        const dateEnd = req.params.dateEnd + ' 23:59:59';
 
         const pedidos = await Pedido.findAll( { 
                             where : { fechaPedido : {[Op.between] : [dateStart, dateEnd]} },
                             attributes : [
                                 'idPedido',
-                                'fechaPedido',
+                                [sequelize.literal('CAST(fechaPedido as CHAR(19))'),'fechaPedido'],
                                 'fechaEntrega',
                                 'descripcionProducto',
                                 'precio',
@@ -108,13 +110,14 @@ const getPedidos = async( req, res ) =>{
                                     model: Sucursal,
                                     as: 'sucursal',
                                     attributes:[
+                                        'idSucursal',
                                         'nombre',
                                         'telefono'
                                     ]
                                 }
                             ],
                             group:['idPedido', 'fechaPedido', 'fechaEntrega', 'descripcionProducto', 'precio', 'anticipo', 'status',
-                                    'cliente.nombre', 'sucursal.nombre','sucursal.telefono'
+                                    'cliente.nombre','sucursal.idSucursal', 'sucursal.nombre','sucursal.telefono'
                             ],
                             raw: true
         });

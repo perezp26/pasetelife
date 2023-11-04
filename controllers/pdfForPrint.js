@@ -1,4 +1,6 @@
 const PdfPrinter = require("pdfmake");
+const sequelize = require('sequelize');
+
 const Roboto = require("../fonts/Roboto");
 const AbonoPedido = require("../models/abonoPedido");
 
@@ -138,7 +140,15 @@ const generarTicketPedido = async (req, res) => {
             ["sucursal.telefono"] : sucursalTelefono, usuario, precio, ["abonosPedidos.totalAbonos"] :totalAbonos  } = req.body;
 
     const abonos = await AbonoPedido.findAll({
-            where : { idPedido  } 
+            where : { idPedido  } ,
+            attributes:[
+                'idAbonoPedido',
+                'idPedido',
+                [sequelize.literal(`CAST(fechaAbono as CHAR(19))`) , 'fechaAbono'],
+                'formaPago',
+                'montoAbono',
+                'descripcionAbono'
+            ]
     })
 
     const detalleAbonos = abonos.map( d => [
