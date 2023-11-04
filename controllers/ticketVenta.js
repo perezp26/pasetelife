@@ -257,41 +257,42 @@ const cancelarTicketVenta = async( req, res) => {
             const detallesTicketVenta = await DetallesTicketVenta.findAll({ where : {idTicketVenta } }, transaction)
 
             for( d of detallesTicketVenta ){
-                const existenciaProductoSuc = await ExistenciaProductoSucursal.findOne({
-                                              where:{ idSucursal : d.idSucursal, idProducto : d.idProducto }
-                }, transaction);
-                await existenciaProductoSuc.update({ salidas: existenciaProductoSuc.salidas - d.cantidad },{transaction});
-
-                const detalleEntradaProducto = await DetalleEntradaProducto.findOne({ where: { idDetalleEntradaProducto : d.idDetalleEntradaProducto }, transaction });
-                await detalleEntradaProducto.update( { totalSalidas :  detalleEntradaProducto.totalSalidas - d.cantidad}, {transaction} )
-
-                //regreso lo sinsumos relacionados
-                const insumosRelacionados = await InsumoRelacionado.findAll( {where:{ idProducto : d.idProducto }, transaction});
-                for( i of insumosRelacionados ){
-
-                    const detalleEntradaInsumo = await DetalleEntradaInsumo.findOne({
-                        where:{  
-                            [Op.and]:[
-                            {idInsumo : i.idInsumo },
-                            {idSucursal: ticketVenta.idSucursal}
-                        ] },
-                        order:['caducidad','idEntradaInsumo']
+                if (d.idEntradaProducto > 0 ){
+                    const existenciaProductoSuc = await ExistenciaProductoSucursal.findOne({
+                                                where:{ idSucursal : d.idSucursal, idProducto : d.idProducto }
                     }, transaction);
+                    await existenciaProductoSuc.update({ salidas: existenciaProductoSuc.salidas - d.cantidad },{transaction});
 
-                    if(detalleEntradaInsumo){
-                        const suma = detalleEntradaInsumo.totalCantidadSalidas - i.cantidadInsumo
-                        await detalleEntradaInsumo.update({ totalCantidadSalidas: suma }, {transaction })
-                        //actualiza la exitencia en la tabla existencia sucursal
-                        const existenciasSucursal = await ExistenciaInsumoSucursal.findOne( 
-                            { where: { idInsumo: i.idInsumo, idSucursal: ticketVenta.idSucursal}, transaction }
-                        )
-                        if(existenciasSucursal){
-                            await existenciasSucursal.update({ salidas: existenciasSucursal.salidas - i.cantidadInsumo }, { transaction })
+                    const detalleEntradaProducto = await DetalleEntradaProducto.findOne({ where: { idDetalleEntradaProducto : d.idDetalleEntradaProducto }, transaction });
+                    await detalleEntradaProducto.update( { totalSalidas :  detalleEntradaProducto.totalSalidas - d.cantidad}, {transaction} )
+
+                    //regreso lo sinsumos relacionados
+                    const insumosRelacionados = await InsumoRelacionado.findAll( {where:{ idProducto : d.idProducto }, transaction});
+                    for( i of insumosRelacionados ){
+
+                        const detalleEntradaInsumo = await DetalleEntradaInsumo.findOne({
+                            where:{  
+                                [Op.and]:[
+                                {idInsumo : i.idInsumo },
+                                {idSucursal: ticketVenta.idSucursal}
+                            ] },
+                            order:['caducidad','idEntradaInsumo']
+                        }, transaction);
+
+                        if(detalleEntradaInsumo){
+                            const suma = detalleEntradaInsumo.totalCantidadSalidas - i.cantidadInsumo
+                            await detalleEntradaInsumo.update({ totalCantidadSalidas: suma }, {transaction })
+                            //actualiza la exitencia en la tabla existencia sucursal
+                            const existenciasSucursal = await ExistenciaInsumoSucursal.findOne( 
+                                { where: { idInsumo: i.idInsumo, idSucursal: ticketVenta.idSucursal}, transaction }
+                            )
+                            if(existenciasSucursal){
+                                await existenciasSucursal.update({ salidas: existenciasSucursal.salidas - i.cantidadInsumo }, { transaction })
+                            }
                         }
+
                     }
-
                 }
-
             }
 
             await DetallesTicketVenta.update({ status:'C' }, { where: { idTicketVenta }, transaction})
