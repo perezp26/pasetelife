@@ -47,15 +47,16 @@ const updatePedido = async( req, res ) => {
     try {
 
         const idPedido = req.params.idPedido;
-        const { fechaPedidio, fechaEntrega, idSucursal, idCliente, descripcionProducto, numPersonas, precio } = req.body
+        const { fechaPedido, fechaEntrega, idSucursal, idCliente, nombreCliente, descripcionProducto, numPersonas, precio } = req.body
         const data = {
-            fechaPedidio,
+            fechaPedido,
             fechaEntrega,
             idSucursal, 
             idCliente,
             descripcionProducto,
             numPersonas,
-            precio
+            precio, 
+            nombreCliente
         }
  
         const pedido  = await Pedido.findOne( { where:{ idPedido } } );
@@ -91,7 +92,7 @@ const getPedidos = async( req, res ) =>{
                                 'precio',
                                 'anticipo',
                                 'status',
-                               
+                                'nombreCliente',
                             ],
                             include: [
                                 {
